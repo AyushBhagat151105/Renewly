@@ -9,6 +9,9 @@ import { CacheModule } from '@nestjs/cache-manager';
 import Keyv from 'keyv';
 import KeyvRedis from '@keyv/redis';
 import { CacheableMemory } from 'cacheable';
+import { NotificationModule } from './notification/notification.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { BullModule } from '@nestjs/bullmq';
 
 @Module({
   imports: [
@@ -43,8 +46,28 @@ import { CacheableMemory } from 'cacheable';
         };
       },
     }),
+    BullModule.forRoot({
+      connection: {
+        host: process.env.REDIS_HOST || 'localhost',
+        port: parseInt(process.env.REDIS_PORT || '6379'),
+        username: process.env.REDIS_USERNAME,
+        password: process.env.REDIS_PASSWORD,
+      },
+      defaultJobOptions: {
+        removeOnComplete: {
+          age: 3600, // Keep completed jobs for 1 hour
+          count: 1000,
+        },
+        removeOnFail: {
+          age: 86400, // Keep failed jobs for 24 hours
+        },
+      },
+    }),
     AuthModule,
     SubscriptionsModule,
+    ScheduleModule.forRoot({
+    }),
+    NotificationModule
   ],
   controllers: [AppController],
   providers: [],

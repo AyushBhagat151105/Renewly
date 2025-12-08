@@ -5,6 +5,7 @@ import {
   IsEnum,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString,
 } from 'class-validator';
 import { SubscriptionType } from '../entities/subscription.entity';
@@ -54,6 +55,14 @@ export class CreateSubscriptionDto {
   @IsNotEmpty({ message: 'Category is required' })
   @IsString()
   category: string;
+
+  @ApiProperty({
+    example: 'Expo token',
+    description: 'Expo Token',
+  })
+  @IsOptional()
+  @IsString()
+  expoToken: string;
 
   @ApiProperty({
     example: '2025-01-01',
