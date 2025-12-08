@@ -38,6 +38,9 @@ export class Subscription {
   @CreateDateColumn()
   startDate: Date;
 
+  @Column({ nullable: true })
+  expoToken: string
+
   @CreateDateColumn()
   createdAt: Date;
 

@@ -64,6 +64,8 @@ export class SubscriptionsService {
       skip: query?.page ? (query.page - 1) * (query?.limit || 50) : 0,
     });
 
+    console.log(subscriptions)
+
     if (!subscriptions?.length)
       throw new NotFoundException('No subscriptions found');
 
@@ -107,12 +109,13 @@ export class SubscriptionsService {
     updateSubscriptionDto: UpdateSubscriptionDto,
   ) {
     try {
-      const { amount, category, notifications, title, type, startDate } =
-        updateSubscriptionDto;
-
       const findforUpdate = await this.subscriptionRepository.findOneBy({
         id,
       });
+
+      if (!findforUpdate) {
+        throw new NotFoundException('Subscription not found');
+      }
 
       if (findforUpdate?.clerkUserId !== user.id) {
         throw new ForbiddenException(
@@ -120,21 +123,38 @@ export class SubscriptionsService {
         );
       }
 
-      if (!findforUpdate) {
-        throw new NotFoundException('Subscription not found');
+      // Update only provided fields
+      if (updateSubscriptionDto.amount !== undefined) {
+        findforUpdate.amount = updateSubscriptionDto.amount;
       }
 
-      const updatedSubscription = await this.subscriptionRepository.save({
-        ...findforUpdate,
-        amount,
-        category,
-        notifications,
-        title,
-        type,
-        startDate,
-      });
+      if (updateSubscriptionDto.category !== undefined) {
+        findforUpdate.category = updateSubscriptionDto.category;
+      }
 
-      await this.cache.del(`subscription:${id}`);
+      if (updateSubscriptionDto.notifications !== undefined) {
+        findforUpdate.notifications = updateSubscriptionDto.notifications;
+      }
+
+      if (updateSubscriptionDto.title !== undefined) {
+        findforUpdate.title = updateSubscriptionDto.title;
+      }
+
+      if (updateSubscriptionDto.type !== undefined) {
+        findforUpdate.type = updateSubscriptionDto.type;
+      }
+
+      if(updateSubscriptionDto.expoToken!== undefined){
+        findforUpdate.expoToken=updateSubscriptionDto.expoToken
+      }
+
+      if (updateSubscriptionDto.startDate !== undefined) {
+        findforUpdate.startDate = updateSubscriptionDto.startDate;
+      }
+
+      const updatedSubscription = await this.subscriptionRepository.save(findforUpdate);
+
+      await this.cache.del(`subscriptions:${id}`);
 
       return updatedSubscription;
     } catch (error) {
