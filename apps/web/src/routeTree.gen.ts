@@ -25,7 +25,6 @@ const UnauthorizedRoute = UnauthorizedRouteImport.update({
 } as any)
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
-  path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -39,8 +38,6 @@ const FaqRoute = FaqRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardIndexRoute = DashboardIndexRouteImport.update({
