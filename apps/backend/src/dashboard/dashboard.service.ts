@@ -1,6 +1,6 @@
 import { type ClerkClient, User } from '@clerk/backend';
 import { InjectQueue } from '@nestjs/bullmq';
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { ForbiddenException, Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Queue } from 'bullmq';
 import {
@@ -31,6 +31,12 @@ export class DashboardService {
 
   // ---------- ADMIN DASHBOARD ----------
   async getGlobalDashboard(user: User) {
+    // const isAdmin = await user.publicMetadata?.role;
+
+    // if (!isAdmin) {
+    //   throw new ForbiddenException('Only admin can access this route');
+    // }
+
     const cacheKey = `dashboard:admin:${user.id}`;
 
     const cached = await this.cache.get(cacheKey);
