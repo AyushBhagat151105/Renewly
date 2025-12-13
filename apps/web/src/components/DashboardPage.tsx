@@ -24,8 +24,8 @@ export default function DashboardPage() {
         )
     if (isLoading)
         return (
-            <div className="p-4">
-                <p className="text-muted-foreground">Loading dashboard...</p>
+            <div className="flex items-center justify-center min-h-screen">
+                <Spinner />
             </div>
         );
 
