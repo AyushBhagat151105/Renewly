@@ -7,6 +7,7 @@ export const useGetDashboardStats = () => {
 
   return useQuery<DashboardResponse>({
     queryKey: ["dashboardStats"],
+    refetchInterval: 60000,
     queryFn: async () => {
       try {
         const res = await api.get("/dashboard/admin");
