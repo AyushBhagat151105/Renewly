@@ -1,6 +1,6 @@
 import { type ClerkClient, User } from '@clerk/backend';
 import { InjectQueue } from '@nestjs/bullmq';
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { ForbiddenException, Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Queue } from 'bullmq';
 import {
@@ -27,9 +27,15 @@ export class DashboardService {
 
     @Inject(CACHE_MANAGER)
     private readonly cache: Cache,
-  ) { }
+  ) {}
 
   async getGlobalDashboard(user: User) {
+    const isAdmin = await user.publicMetadata?.role;
+
+    if (!isAdmin) {
+      throw new ForbiddenException('Only admin can access this route');
+    }
+
     const cacheKey = `dashboard:admin:${user.id}`;
 
     const cached = await this.cache.get(cacheKey);
@@ -48,7 +54,7 @@ export class DashboardService {
       .select([
         `LOWER(TRIM(s."clerkUserId")) AS "normalizedId"`,
         `COUNT(*)::int AS "subscriptionCount"`,
-        `SUM(CASE WHEN s.notifications = true THEN 1 ELSE 0 END)::int AS "notifications"`,
+        `SUM(CASE WHEN s.notification = true THEN 1 ELSE 0 END)::int AS "notifications"`,
       ])
       .groupBy(`s."clerkUserId"`)
       .getRawMany();
