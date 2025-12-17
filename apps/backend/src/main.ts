@@ -17,7 +17,7 @@ async function bootstrap() {
     allowedHeaders: 'Content-Type, Authorization',
   });
   app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
-  app.setGlobalPrefix('api/v1');
+  app.setGlobalPrefix('v1');
   const config = new DocumentBuilder()
     .setTitle('Renewly API')
     .setDescription('The Renewly API description')
