@@ -1,10 +1,9 @@
-import { defineConfig } from "vite";
-import { devtools } from "@tanstack/devtools-vite";
-import viteReact from "@vitejs/plugin-react";
-import tailwindcss from "@tailwindcss/vite";
+import { defineConfig } from 'vite'
+import viteReact from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
+import { nitro } from 'nitro/vite'
 
-import { tanstackRouter } from "@tanstack/router-plugin/vite";
-import { fileURLToPath, URL } from "node:url";
+import { fileURLToPath, URL } from 'node:url'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -16,6 +15,7 @@ export default defineConfig({
     }),
     viteReact(),
     tailwindcss(),
+    nitro(),  
   ],
   resolve: {
     alias: {
